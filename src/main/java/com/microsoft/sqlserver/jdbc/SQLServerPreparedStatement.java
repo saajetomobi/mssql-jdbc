@@ -75,8 +75,8 @@ public class SQLServerPreparedStatement extends SQLServerStatement implements IS
     /** True if this execute has been called for this statement at least once */
     private boolean isExecutedAtLeastOnce = false;
 
-    /** True if sp_prepare was called **/
-    private boolean isSpPrepareExecuted = false;
+    /** True if sp_prepare was called during a batch query **/
+    private boolean isSpPrepareBatchExecuted = false;
 
     /** Reference to cache item for statement handle pooling. Only used to decrement ref count on statement close. */
     private PreparedStatementHandle cachedPreparedStatementHandle;
@@ -1108,15 +1108,14 @@ public class SQLServerPreparedStatement extends SQLServerStatement implements IS
                 if (isPrepareMethodSpPrepExec) { // If true, we're using sp_prepexec.
                     buildPrepExecParams(tdsWriter);
                 } else { // Otherwise, we're using sp_prepare instead of sp_prepexec.
-                    isSpPrepareExecuted = true;
                     // If we're preparing for a statement in a batch we just need to call sp_prepare because in the
                     // "batching" code it will start another tds request to execute the statement after preparing.
                     if (executeMethod == EXECUTE_BATCH) {
+                        isSpPrepareBatchExecuted = true;
                         buildPrepParams(tdsWriter);
                         return needsPrepare;
                     } else { // Otherwise, if it is not a batch query, then prepare and start new TDS request to execute
                              // the statement.
-                        isSpPrepareExecuted = false;
                         doPrep(tdsWriter, command);
                         command.startRequest(TDS.PKT_RPC);
                         buildExecParams(tdsWriter);
@@ -2910,8 +2909,11 @@ public class SQLServerPreparedStatement extends SQLServerStatement implements IS
                                 if (!getNextResult(true))
                                     return;
 
-                                if (isSpPrepareExecuted) {
-                                    isSpPrepareExecuted = false;
+                                if (isSpPrepareBatchExecuted) {
+                                    if (!hasPreparedStatementHandle()) {
+                                        buildPrepParams(tdsWriter);
+                                    }
+                                    isSpPrepareBatchExecuted = false;
                                     resetForReexecute();
                                     tdsWriter = batchCommand.startRequest(TDS.PKT_RPC);
                                     buildExecParams(tdsWriter);
@@ -2958,6 +2960,9 @@ public class SQLServerPreparedStatement extends SQLServerStatement implements IS
                             // to indicate that no information was returned
                             batchCommand.updateCounts[numBatchesExecuted] = (-1 == updateCount) ? Statement.SUCCESS_NO_INFO
                                                                                                 : updateCount;
+                            if (batchCommand.updateCounts[numBatchesExecuted] == -3) {
+                                System.out.println();
+                            }
                             processBatch();
 
                             numBatchesExecuted++;
