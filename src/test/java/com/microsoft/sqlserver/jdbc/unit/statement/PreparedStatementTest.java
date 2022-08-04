@@ -12,10 +12,17 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
 
 import java.lang.reflect.Field;
+import java.math.BigDecimal;
 import java.sql.BatchUpdateException;
+import java.sql.Date;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.sql.Time;
+import java.sql.Timestamp;
+import java.time.LocalTime;
 import java.util.Random;
 import java.util.UUID;
 import java.util.concurrent.CountDownLatch;
@@ -67,6 +74,51 @@ public class PreparedStatementTest extends AbstractTest {
                 returnValue = result.getInt(1);
 
             return returnValue;
+        }
+    }
+
+    @Test
+    public void t() throws SQLException {
+        String connectionStringPrepare = "jdbc:sqlserver://localhost:1433;databaseName=test_jdbc_40381;userName=sa;password=Moonshine4u;prepareMethod=prepare;trustServerCertificate=true;";
+        try (SQLServerConnection conn = (SQLServerConnection) DriverManager.getConnection(connectionStringPrepare)) {
+            try(SQLServerPreparedStatement pstmt = (SQLServerPreparedStatement) conn.prepareStatement("{call dbo.spdefault_jdbc_(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)}"); ) {
+                Timestamp timestamp = null;
+                pstmt.setSmallDateTime(1, null);
+                pstmt.setString(2, null);
+                pstmt.setInt(3, 3);
+                pstmt.setDouble(4, 6.299901389346583E306);
+                pstmt.setString(5, null);
+                pstmt.setString(6, null);
+                pstmt.setUniqueIdentifier(7, null);
+                pstmt.setSmallMoney(8, BigDecimal.valueOf(0.0000));
+                pstmt.setDateTime(9, timestamp);
+                pstmt.setBoolean(10, true);
+                pstmt.setDate(11, Date.valueOf("3308-07-01"));
+                pstmt.setDouble(12, 833.2980);
+                pstmt.setString(13, null);
+                pstmt.setTime(14, Time.valueOf(LocalTime.MAX));
+                pstmt.setInt(15, -98);
+                pstmt.setString(16, "-44");
+                pstmt.setString(17, "");
+                pstmt.setInt(18, 26167);
+                pstmt.setBytes(19, null);
+                pstmt.setString(20, "11");
+                pstmt.setBytes(21, null);
+                pstmt.setBytes(22, null);
+                pstmt.setBytes(23, null);
+                pstmt.setDateTime(24, null);
+                pstmt.setDouble(25, -1595053784.0000);
+                pstmt.setBigDecimal(26, BigDecimal.valueOf(-121.4192));
+                pstmt.setBytes(27, null);
+                pstmt.setMoney(28, BigDecimal.valueOf(1398.1002));
+                pstmt.setString(29, null);
+                pstmt.setString(30, null);
+                pstmt.setDateTimeOffset(31, null);
+                pstmt.setInt(32, -1747345238);
+                pstmt.setInt(33, 31);
+
+                ResultSet rs = pstmt.executeQuery();
+            }
         }
     }
 

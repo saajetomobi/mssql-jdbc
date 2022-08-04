@@ -2174,6 +2174,14 @@ public class SQLServerPreparedStatement extends SQLServerStatement implements IS
                 for (int i = 0; i < batchCommand.updateCounts.length; ++i)
                     updateCounts[i] = (int) batchCommand.updateCounts[i];
 
+                for (int i = 0; i < updateCounts.length; i++) {
+                    if (updateCounts[i] == -3) {
+                        System.out.println("=========================================================================================");
+                        System.out.println(updateCounts[i]);
+                        System.out.println("=========================================================================================");
+                    }
+                }
+
                 // Transform the SQLException into a BatchUpdateException with the update counts.
                 if (null != batchCommand.batchException) {
                     throw new BatchUpdateException(batchCommand.batchException.getMessage(),
@@ -2785,6 +2793,8 @@ public class SQLServerPreparedStatement extends SQLServerStatement implements IS
         batchCommand.batchException = null;
         final int numBatches = batchParamValues.size();
         batchCommand.updateCounts = new long[numBatches];
+
+
         for (int i = 0; i < numBatches; i++)
             batchCommand.updateCounts[i] = Statement.EXECUTE_FAILED; // Init to unknown status EXECUTE_FAILED
 
@@ -2888,6 +2898,12 @@ public class SQLServerPreparedStatement extends SQLServerStatement implements IS
                     // But we may also need to reprepare the statement if, for example,
                     // the size of a batch's string parameter values changes such
                     // that repreparation is necessary.
+                    boolean debugBool = (hasNewTypeDefinitions && hasExistingTypeDefinitions) || !hasPreparedStatementHandle();
+
+                    if (numBatches >= 4 && debugBool) {
+                        System.out.println();
+                    }
+
                     ++numBatchesPrepared;
                     needsPrepare = doPrepExec(tdsWriter, batchParam, hasNewTypeDefinitions, hasExistingTypeDefinitions,
                             batchCommand);
@@ -2909,10 +2925,11 @@ public class SQLServerPreparedStatement extends SQLServerStatement implements IS
                                 if (!getNextResult(true))
                                     return;
 
-                                if (isSpPrepareBatchExecuted) {
-                                    if (!hasPreparedStatementHandle()) {
-                                        buildPrepParams(tdsWriter);
-                                    }
+                                // If sp_prepare was executed, but a handle doesn't exist that means
+                                // the TDS response for the handle has not been processed yet. Rather, it means
+                                // that another result was processed from a sp_execute query instead. Therefore, we
+                                // continue processing.
+                                if (isSpPrepareBatchExecuted && hasPreparedStatementHandle()) {
                                     isSpPrepareBatchExecuted = false;
                                     resetForReexecute();
                                     tdsWriter = batchCommand.startRequest(TDS.PKT_RPC);
