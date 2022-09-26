@@ -426,13 +426,15 @@ final class Parameter {
 
         private final Parameter param;
         private final SQLServerConnection con;
+        
+        private BigDecimal providedDecimal;
 
         GetTypeDefinitionOp(Parameter param, SQLServerConnection con) {
             this.param = param;
             this.con = con;
         }
 
-        private void setTypeDefinition(DTV dtv) {
+        private void setTypeDefinition(DTV dtv) throws SQLServerException {
             switch (dtv.getJdbcType()) {
                 case TINYINT:
                     param.typeDefinition = SSType.TINYINT.toString();
@@ -531,11 +533,16 @@ final class Parameter {
                         if (userProvidesPrecision) {
                             param.typeDefinition = "decimal(" + valueLength + "," + scale + ")";
                         }
-                    } else
+                    } else if (dtv.getJavaType() == JavaType.BIGDECIMAL
+                            && (providedDecimal = (BigDecimal) dtv.getValue(dtv.getJdbcType(), scale, null, null,
+                            typeInfo, cryptoMeta, null, null)) != null
+                        && providedDecimal.precision() >= scale) {
+                            param.typeDefinition = "decimal(" + providedDecimal.precision() + "," + scale + ")";
+                    } else {
                         param.typeDefinition = "decimal(" + SQLServerConnection.maxDecimalPrecision + "," + scale + ")";
+                    }
 
                     break;
-
                 case MONEY:
                     param.typeDefinition = SSType.MONEY.toString();
                     break;
