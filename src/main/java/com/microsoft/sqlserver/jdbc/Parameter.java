@@ -543,7 +543,7 @@ final class Parameter {
                             System.out.println(providedDecimal);
                             System.out.println(providedDecimal.precision());
                             System.out.println(providedDecimal.scale());
-                            System.out.prinlnt(scale);
+                            System.out.println(scale);
                             param.typeDefinition = "decimal(" + providedDecimal.precision() + "," + scale + ")";
                     } else {
                         param.typeDefinition = "decimal(" + SQLServerConnection.maxDecimalPrecision + "," + scale + ")";
