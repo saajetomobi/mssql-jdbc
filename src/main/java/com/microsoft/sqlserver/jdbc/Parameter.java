@@ -544,7 +544,7 @@ final class Parameter {
                             System.out.println(providedDecimal.precision());
                             System.out.println(providedDecimal.scale());
                             System.out.println(scale);
-                            param.typeDefinition = "decimal(" + providedDecimal.precision() + "," + scale + ")";
+                            param.typeDefinition = "decimal(" + SQLServerConnection.maxDecimalPrecision + "," + scale + ")";
                     } else {
                         param.typeDefinition = "decimal(" + SQLServerConnection.maxDecimalPrecision + "," + scale + ")";
                     }
