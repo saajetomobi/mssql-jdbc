@@ -537,10 +537,13 @@ final class Parameter {
                             && (providedDecimal = (BigDecimal) dtv.getValue(dtv.getJdbcType(), scale, null, null,
                             typeInfo, cryptoMeta, null, null)) != null
                         && providedDecimal.precision() >= scale) {
+                            System.out.println("Enters the if and fails");
                             param.typeDefinition = "decimal(" + providedDecimal.precision() + "," + scale + ")";
                     } else {
+                        System.out.println("Enters the else and fails");
                         param.typeDefinition = "decimal(" + SQLServerConnection.maxDecimalPrecision + "," + scale + ")";
                     }
+                    //System.out.println(param.typeDefinition);
 
                     break;
                 case MONEY:
