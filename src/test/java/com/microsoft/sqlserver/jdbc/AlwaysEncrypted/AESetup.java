@@ -217,6 +217,12 @@ public class AESetup extends AbstractTest {
             param[i][1] = url;
             param[i][2] = protocol;
 
+            if (serverName.equals("drivers-ae-vbs-none.database.windows.net")) {
+                connectionString = TestUtils.addOrOverrideProperty(connectionString, "databaseName", "TestDb");
+            } else {
+                connectionString = TestUtils.addOrOverrideProperty(connectionString, "databaseName", "master");
+            }
+            
             setAEConnectionString(serverName, url, protocol);
 
             createCMK(AETestConnectionString, cmkJks, Constants.JAVA_KEY_STORE_NAME, javaKeyAliases,
