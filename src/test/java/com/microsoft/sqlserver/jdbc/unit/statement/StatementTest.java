@@ -1495,7 +1495,7 @@ public class StatementTest extends AbstractTest {
                 stmt.executeUpdate(
                         "insert into " + AbstractSQLGenerator.escapeIdentifier(tableName) + " values (99999.12345)");
                 try (PreparedStatement pstmt = con.prepareStatement(
-                        "select (test_column - ?), (test_column - ?), (test_column - ?), (test_column - ?), (? - test_column) from "
+                        "select (test_column - ?), (test_column - ?), (test_column - ?), (test_column - ?), (test_column - ?) from "
                                 + AbstractSQLGenerator.escapeIdentifier(tableName))) {
                     BigDecimal value1 = new BigDecimal("1.5");
                     pstmt.setObject(1, value1);
@@ -1517,11 +1517,11 @@ public class StatementTest extends AbstractTest {
 
                     try (ResultSet rs = pstmt.executeQuery()) {
                         rs.next();
-                        //assert (expected1.equals(rs.getObject(1)));
-                        //assert (expected2.equals(rs.getObject(2)));
-                        //assert (expected3.equals(rs.getObject(3)));
-                        //assert (expected4.equals(rs.getObject(4)));
-                        //assert (expected5.equals(rs.getObject(5)));
+                        assert (expected1.equals(rs.getObject(1)));
+                        assert (expected2.equals(rs.getObject(2)));
+                        assert (expected3.equals(rs.getObject(3)));
+                        assert (expected4.equals(rs.getObject(4)));
+                        assert (expected5.equals(rs.getObject(5)));
                     }
                 }
             }
@@ -1560,10 +1560,10 @@ public class StatementTest extends AbstractTest {
 
                     try (ResultSet rs = pstmt.executeQuery()) {
                         rs.next();
-//                        assert (expected1.equals(rs.getObject(1)));
-//                        assert (expected2.equals(rs.getObject(2)));
-//                        assert (expected3.equals(rs.getObject(3)));
-//                        assert (expected4.equals(rs.getObject(4)));
+                        assert (expected1.equals(rs.getObject(1)));
+                        assert (expected2.equals(rs.getObject(2)));
+                        assert (expected3.equals(rs.getObject(3)));
+                        assert (expected4.equals(rs.getObject(4)));
                     }
                 }
             }
@@ -1602,10 +1602,10 @@ public class StatementTest extends AbstractTest {
 
                     try (ResultSet rs = pstmt.executeQuery()) {
                         rs.next();
-//                        assert (expected1.equals(rs.getObject(1)));
-//                        assert (expected2.equals(rs.getObject(2)));
-//                        assert (expected3.equals(rs.getObject(3)));
-//                        assert (expected4.equals(rs.getObject(4)));
+                        assert (expected1.equals(rs.getObject(1)));
+                        assert (expected2.equals(rs.getObject(2)));
+                        assert (expected3.equals(rs.getObject(3)));
+                        assert (expected4.equals(rs.getObject(4)));
                     }
                 }
             }
@@ -1650,10 +1650,10 @@ public class StatementTest extends AbstractTest {
 
                     try (ResultSet rs = pstmt.executeQuery()) {
                         rs.next();
-//                        assertEquals(0, expected1.compareTo((BigDecimal) rs.getObject(1)));
-//                        assertEquals(0, expected2.compareTo((BigDecimal) rs.getObject(2)));
-//                        assertEquals(0, expected3.compareTo((BigDecimal) rs.getObject(3)));
-//                        assertEquals(0, expected4.compareTo((BigDecimal) rs.getObject(4)));
+                        assertEquals(0, expected1.compareTo((BigDecimal) rs.getObject(1)));
+                        assertEquals(0, expected2.compareTo((BigDecimal) rs.getObject(2)));
+                        assertEquals(0, expected3.compareTo((BigDecimal) rs.getObject(3)));
+                        assertEquals(0, expected4.compareTo((BigDecimal) rs.getObject(4)));
                     }
                 }
             }

@@ -533,9 +533,6 @@ final class Parameter {
                         if (userProvidesPrecision) {
                             param.typeDefinition = "decimal(" + valueLength + "," + scale + ")";
                         }
-//                    } else {
-//                        param.typeDefinition = "decimal(" + SQLServerConnection.defaultDecimalPrecision + "," + scale + ")";
-//                    }
                     } else if (dtv.getJavaType() == JavaType.BIGDECIMAL
                             && (providedDecimal = (BigDecimal) dtv.getValue(dtv.getJdbcType(), scale, null, null,
                             typeInfo, cryptoMeta, null, null)) != null
@@ -544,7 +541,7 @@ final class Parameter {
                             System.out.println(providedDecimal.precision());
                             System.out.println(providedDecimal.scale());
                             System.out.println(scale);
-                            param.typeDefinition = "decimal(" + SQLServerConnection.maxDecimalPrecision + "," + scale + ")";
+                            param.typeDefinition = "decimal(" + providedDecimal.precision() + "," + providedDecimal.scale() + ")";
                     } else {
                         param.typeDefinition = "decimal(" + SQLServerConnection.maxDecimalPrecision + "," + scale + ")";
                     }
