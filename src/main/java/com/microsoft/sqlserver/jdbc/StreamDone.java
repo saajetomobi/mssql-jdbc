@@ -162,7 +162,7 @@ class StreamDone extends StreamPacket {
     /**
      * Return the packet's current command
      */
-    /* L0 */ final short getCurCmd() {
+    final short getCurCmd() {
         return curCmd;
     }
 
@@ -171,7 +171,7 @@ class StreamDone extends StreamPacket {
      * 
      * @return true if final
      */
-    /* L0 */ final boolean isFinal() {
+    final boolean isFinal() {
         return (status & TDS.DONE_MORE) == 0;
     }
 
@@ -180,8 +180,8 @@ class StreamDone extends StreamPacket {
      * 
      * @return true if error
      */
-    /* L0 */ final boolean isError() {
-        return (status & TDS.DONE_ERROR) != 0;
+    final boolean isError() {
+        return ((status & TDS.DONE_ERROR) != 0 || (status & TDS.DONE_SRVERROR) != 0);
     }
 
     /**
@@ -189,7 +189,7 @@ class StreamDone extends StreamPacket {
      * 
      * @return true if the row count is present
      */
-    /* L0 */ final boolean updateCountIsValid() {
+    final boolean updateCountIsValid() {
         return (status & TDS.DONE_COUNT) != 0;
     }
 

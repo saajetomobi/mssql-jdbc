@@ -257,6 +257,13 @@ public class SQLServerCallableStatement extends SQLServerPreparedStatement imple
                 doneToken.setFromTDS(tdsReader);
                 connection.getSessionRecovery().decrementUnprocessedResponseCount();
 
+                if (doneToken.isError()) {
+                    short status = tdsReader.peekStatusFlag();
+                    MessageFormat form = new MessageFormat(SQLServerException.getErrString("R_serverError"));
+                    Object[] msgArgs = {status};
+                    SQLServerException.makeFromDriverError(connection, this, form.format(msgArgs), null, false);
+                }
+
                 // If this is a non-final batch-terminating DONE token,
                 // then stop parsing the response now and set up for
                 // the next batch.

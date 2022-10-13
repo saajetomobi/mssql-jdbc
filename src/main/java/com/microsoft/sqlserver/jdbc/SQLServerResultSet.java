@@ -5378,6 +5378,13 @@ public class SQLServerResultSet implements ISQLServerResultSet, java.io.Serializ
                 doneToken.setFromTDS(tdsReader);
                 stmt.connection.getSessionRecovery().decrementUnprocessedResponseCount();
 
+                if (doneToken.isError()) {
+                    short status = tdsReader.peekStatusFlag();
+                    MessageFormat form = new MessageFormat(SQLServerException.getErrString("R_serverError"));
+                    Object[] msgArgs = {status};
+                    SQLServerException.makeFromDriverError(stmt.connection, stmt, form.format(msgArgs), null, false);
+                }
+
                 // Done with all the rows in this fetch buffer and done with parsing
                 // unless it's a server cursor, in which case there is a RETSTAT and
                 // another DONE token to follow.
@@ -5472,11 +5479,18 @@ public class SQLServerResultSet implements ISQLServerResultSet, java.io.Serializ
             while (null != tdsReader && !done && fetchBufferCurrentRowType.equals(RowType.UNKNOWN))
                 TDSParser.parse(tdsReader, fetchBufferTokenHandler);
 
-            if (fetchBufferCurrentRowType.equals(RowType.UNKNOWN)
-                    && null != fetchBufferTokenHandler.getDatabaseError()) {
-                SQLServerException.makeFromDatabaseError(stmt.connection, null,
-                        fetchBufferTokenHandler.getDatabaseError().getErrorMessage(),
-                        fetchBufferTokenHandler.getDatabaseError(), false);
+            if (null != fetchBufferTokenHandler.getDatabaseError()) {
+                if (fetchBufferCurrentRowType.equals(RowType.UNKNOWN)) {
+                    SQLServerException.makeFromDatabaseError(stmt.connection, null,
+                            fetchBufferTokenHandler.getDatabaseError().getErrorMessage(),
+                            fetchBufferTokenHandler.getDatabaseError(), false);
+                } else {
+                    System.out.println(
+                            "This was the issue, we should fail here? RowType=" + fetchBufferCurrentRowType.toString());
+                    System.out
+                            .println("database error: " + fetchBufferTokenHandler.getDatabaseError().getErrorMessage());
+                }
+
             }
 
             return fetchBufferCurrentRowType;

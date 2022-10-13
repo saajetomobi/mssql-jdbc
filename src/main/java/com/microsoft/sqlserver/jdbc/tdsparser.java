@@ -243,13 +243,22 @@ class TDSTokenHandler {
     }
 
     boolean onError(TDSReader tdsReader) throws SQLServerException {
+        System.out.println("received Error token");
         if (null == databaseError) {
+            System.out.println("new database error!");
+
             databaseError = new SQLServerError();
             databaseError.setFromTDS(tdsReader);
         } else {
+            System.out.println("there was already a database error before:");
+            System.out.println("errorNumber: " + databaseError.getErrorNumber());
+            System.out.println("errorState: " + databaseError.getErrorState());
+            System.out.println("errorSeverity: " + databaseError.getErrorSeverity());
+            System.out.println("errorMessage: " + databaseError.getErrorMessage());
+            System.out.println("serverName: " + databaseError.getServerName());
+            System.out.println("procName: " + databaseError.getProcedureName());
             (new SQLServerError()).setFromTDS(tdsReader);
         }
-
         return true;
     }
 

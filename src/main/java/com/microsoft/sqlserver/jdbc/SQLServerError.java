@@ -236,5 +236,13 @@ public final class SQLServerError extends StreamPacket implements Serializable {
         serverName = tdsReader.readUnicodeString(tdsReader.readUnsignedByte());
         procName = tdsReader.readUnicodeString(tdsReader.readUnsignedByte());
         lineNumber = tdsReader.readUnsignedInt();
+
+        System.out.println("from TDS: errorNumber: " + errorNumber);
+        System.out.println("from TDS: errorState: " + errorState);
+        System.out.println("from TDS: errorSeverity: " + errorState);
+        System.out.println("from TDS: errorMessage: " + errorMessage);
+        System.out.println("from TDS: serverName: " + serverName);
+        System.out.println("from TDS: procName: " + procName);
+
     }
 }
