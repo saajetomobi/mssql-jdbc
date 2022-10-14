@@ -257,8 +257,8 @@ public class SQLServerCallableStatement extends SQLServerPreparedStatement imple
                 doneToken.setFromTDS(tdsReader);
                 connection.getSessionRecovery().decrementUnprocessedResponseCount();
 
-                if (doneToken.isError()) {
-                    short status = tdsReader.peekStatusFlag();
+                short status = tdsReader.peekStatusFlag();
+                if ((status & TDS.DONE_ERROR) != 0 || (status & TDS.DONE_SRVERROR) != 0) {
                     MessageFormat form = new MessageFormat(SQLServerException.getErrString("R_serverError"));
                     Object[] msgArgs = {status};
                     SQLServerException.makeFromDriverError(connection, this, form.format(msgArgs), null, false);

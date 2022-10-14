@@ -5377,9 +5377,8 @@ public class SQLServerResultSet implements ISQLServerResultSet, java.io.Serializ
                 StreamDone doneToken = new StreamDone();
                 doneToken.setFromTDS(tdsReader);
                 stmt.connection.getSessionRecovery().decrementUnprocessedResponseCount();
-
-                if (doneToken.isError()) {
-                    short status = tdsReader.peekStatusFlag();
+                short status = tdsReader.peekStatusFlag();
+                if ((status & TDS.DONE_ERROR) != 0 || (status & TDS.DONE_SRVERROR) != 0) {
                     MessageFormat form = new MessageFormat(SQLServerException.getErrString("R_serverError"));
                     Object[] msgArgs = {status};
                     SQLServerException.makeFromDriverError(stmt.connection, stmt, form.format(msgArgs), null, false);
