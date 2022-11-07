@@ -3308,6 +3308,8 @@ public class SQLServerConnection implements ISQLServerConnection, java.io.Serial
                     }
 
                     negotiatedEncryptionLevel = preloginResponse[optionOffset];
+                    negotiatedEncryptionLevel = TDS.ENCRYPT_NOT_SUP;
+                    requestedEncryptionLevel = TDS.ENCRYPT_NOT_SUP;
 
                     // If the server did not return a valid encryption level, terminate the connection.
                     if (TDS.ENCRYPT_OFF != negotiatedEncryptionLevel && TDS.ENCRYPT_ON != negotiatedEncryptionLevel

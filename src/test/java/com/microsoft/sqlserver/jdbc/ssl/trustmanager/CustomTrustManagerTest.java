@@ -11,6 +11,7 @@ import static org.junit.Assert.fail;
 import java.sql.Connection;
 import java.sql.SQLException;
 
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.platform.runner.JUnitPlatform;
 import org.junit.runner.RunWith;
@@ -19,6 +20,7 @@ import com.microsoft.sqlserver.testframework.AbstractTest;
 import com.microsoft.sqlserver.testframework.PrepUtil;
 
 
+@Disabled
 @RunWith(JUnitPlatform.class)
 public class CustomTrustManagerTest extends AbstractTest {
 

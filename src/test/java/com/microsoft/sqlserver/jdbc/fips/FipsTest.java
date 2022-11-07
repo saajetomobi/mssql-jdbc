@@ -11,6 +11,7 @@ import java.sql.SQLException;
 import java.util.Properties;
 
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.platform.runner.JUnitPlatform;
 import org.junit.runner.RunWith;
@@ -26,6 +27,7 @@ import com.microsoft.sqlserver.testframework.PrepUtil;;
 /**
  * Test class for testing FIPS property settings.
  */
+@Disabled
 @RunWith(JUnitPlatform.class)
 public class FipsTest extends AbstractTest {
 
